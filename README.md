@@ -96,9 +96,12 @@ Celery Workers (Reconciliation, Logging)
           ↓
 Drift Detection + Audit Trail + Settlement
 
+```
+-----
 
 ## 📁 Folder Structure
 
+```txt
 vaultcraft/
 ├── app/
 │   ├── api/              # FastAPI routes
@@ -118,55 +121,59 @@ vaultcraft/
 ├── README.md
 └── .env
 
+```
+-----
 
-✅ Key Features
-🔐 Authentication
-JWT access tokens
+## ✅ Key Features
+### 🔐 Authentication
+- JWT access tokens
 
-bcrypt password hashing
+- bcrypt password hashing
 
-Optional: 2FA / OTP extensions
+- Optional: 2FA / OTP extensions
 
-💸 Wallet Transfers
-Supports inter-org wallet transactions
+### 💸 Wallet Transfers
+- Supports inter-org wallet transactions
 
-Validations for sufficient balance
+- Validations for sufficient balance
 
-Transaction statuses: PENDING, COMPLETED, FAILED
+- Transaction statuses: PENDING, COMPLETED, FAILED
 
-Atomic logic with rollback safety
+- Atomic logic with rollback safety
 
-🧾 Double-Entry Ledger
-Every transaction creates a DEBIT and CREDIT ledger row
+### 🧾 Double-Entry Ledger
+- Every transaction creates a DEBIT and CREDIT ledger row
 
-Wallet balances derived from ledger state
+- Wallet balances derived from ledger state
 
-📦 Event-Driven Pipeline
-Kafka-compatible event emission from EventOutbox
+### 📦 Event-Driven Pipeline
+- Kafka-compatible event emission from EventOutbox
 
-Outbox pattern ensures reliability even if brokers fail
+- Outbox pattern ensures reliability even if brokers fail
 
-🔍 Reconciliation Engine
-Scheduled worker compares:
+### 🔍 Reconciliation Engine
+- Scheduled worker compares:
 
-wallet.balance vs SUM(ledger entries)
+- wallet.balance vs SUM(ledger entries)
 
-Flags any drift/inconsistency
+- Flags any drift/inconsistency
 
-Logs results in ReconcileJob
+- Logs results in ReconcileJob
 
-🕵️ Audit Logging
-Logs every action:
+### 🕵️ Audit Logging
+- Logs every action:
 
-Actor ID
+- Actor ID
 
-Timestamp
+- Timestamp
 
-Operation (e.g., TRANSFER_FUNDS)
+- Operation (e.g., TRANSFER_FUNDS)
 
-Metadata (wallet IDs, amount, org context)
+- Metadata (wallet IDs, amount, org context)
 
+----
 
+## 🧪 Testing Strategy
 
 | Type             | Examples                               |
 | ---------------- | -------------------------------------- |
@@ -177,8 +184,9 @@ Metadata (wallet IDs, amount, org context)
 | ✅ Failures       | Kafka broker down → retry & fallback   |
 | ✅ Reconciliation | Drift found → alert generated          |
 
+-----
 
-🚀 Future Extensions
+## 🚀 Future Extensions
 VaultCraft is designed to scale — both in features and complexity. Some next steps:
 
 🧠 Fraud detection engine (based on ledger anomalies)
@@ -193,33 +201,36 @@ VaultCraft is designed to scale — both in features and complexity. Some next s
 
 📊 Prometheus metrics for drift and txn lag
 
-🧭 Project Goals
-VaultCraft is built to demonstrate your ability to:
+----
+## 🧭 Project Goals
+* VaultCraft is built to demonstrate your ability to:
 
-Build production-aware systems, not toy APIs
+* Build production-aware systems, not toy APIs
 
-Design around failure recovery, consistency, and scale
+* Design around failure recovery, consistency, and scale
 
-Work with event-driven pipelines and background jobs
+* Work with event-driven pipelines and background jobs
 
-Think in real-world accounting logic
+* Think in real-world accounting logic
 
-It’s a backend engine that proves system design awareness, not just syntax.
+* It’s a backend engine that proves system design awareness, not just syntax.
 
-
-🛠️ Getting Started
-# 1. Clone the repo
+---- 
+## 🛠️ Getting Started
+1. Clone the repo
 git clone https://github.com/your-username/vaultcraft.git
 cd vaultcraft
 
-# 2. Create environment file
+2. Create environment file
 cp .env.example .env
 
-# 3. Run with Docker
+3. Run with Docker
 docker-compose up --build
 
-📫 Contact
-Built by Bhaskar Reddy.
-DM me on LinkedIn or Twitter to chat backend, architecture, or system design.
+## 📫 Contact
+
+Built by [Bhaskar Reddy](bento.me/bhaskar-reddy).
+
+DM me on [LinkedIn](https://www.linkedin.com/in/bhaskar-reddy-sde/) or [X](https://x.com/ShipWithBhaskar) to chat backend, architecture, or system design.
 
 
