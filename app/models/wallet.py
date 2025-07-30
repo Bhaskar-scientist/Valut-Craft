@@ -1,9 +1,30 @@
 import uuid
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import ForeignKey, String, Numeric, func
 from datetime import datetime
+from enum import Enum as PyEnum  # ✅ Avoid conflict with SQLAlchemy Enum
+
+from sqlalchemy import (
+    ForeignKey,
+    String,
+    Numeric,
+    func,
+    Enum as SQLEnum  # ✅ Use this for the DB column
+)
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models.base import Base
+
+
+# ✅ Define Python enums
+class WalletType(str, PyEnum):
+    PRIMARY = "PRIMARY"
+    BONUS = "BONUS"
+    SYSTEM = "SYSTEM"
+
+class WalletStatus(str, PyEnum):
+    ACTIVE = "ACTIVE"
+    LOCKED = "LOCKED"
+    CLOSED = "CLOSED"
+
 
 class Wallet(Base):
     __tablename__ = "wallets"
@@ -15,21 +36,9 @@ class Wallet(Base):
     org_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("organizations.id"), nullable=True)
     created_at: Mapped[datetime] = mapped_column(default=func.now())
 
+    # ✅ Enum columns with proper SQLAlchemy usage
+    type: Mapped[WalletType] = mapped_column(SQLEnum(WalletType), default=WalletType.PRIMARY)
+    status: Mapped[WalletStatus] = mapped_column(SQLEnum(WalletStatus), default=WalletStatus.ACTIVE)
+
     # Backrefs
     user = relationship("User", back_populates="wallets")
-from enum import Enum
-# Add inside wallet.py
-
-class WalletType(str, Enum):
-    PRIMARY = "PRIMARY"
-    BONUS = "BONUS"
-    SYSTEM = "SYSTEM"
-
-class WalletStatus(str, Enum):
-    ACTIVE = "ACTIVE"
-    LOCKED = "LOCKED"
-    CLOSED = "CLOSED"
-
-# Modify Wallet model:
-type: Mapped[WalletType] = mapped_column(Enum(WalletType), default=WalletType.PRIMARY)
-status: Mapped[WalletStatus] = mapped_column(Enum(WalletStatus), default=WalletStatus.ACTIVE)

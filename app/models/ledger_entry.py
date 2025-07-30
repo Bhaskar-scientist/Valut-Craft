@@ -26,3 +26,4 @@ class LedgerEntry(Base):
     # Backrefs
     wallet = relationship("Wallet")
     transaction = relationship("Transaction", back_populates="ledger_entries")
+    
