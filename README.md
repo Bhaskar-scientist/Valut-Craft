@@ -6,6 +6,42 @@ Inspired by systems powering **UPI**, **Stripe Treasury**, and **RazorpayX**, Va
 
 ---
 
+## 🚀 **Current Status: Phase 1 Complete!**
+
+VaultCraft Phase 1 is now a **transactionally consistent, multi-tenant, ledger-backed financial core** for internal (same-org) wallet operations. Think of it like the internal ops layer in RazorpayX, Stripe Treasury, or a private UPI bank node.
+
+### ✅ **What's Built (Phase 1 Complete)**
+
+- **🔐 Multi-Tenant Authentication System**
+  - JWT-based authentication with bcrypt password hashing
+  - Organization and user management with proper isolation
+  - Protected routes with tenant scoping
+
+- **💰 Wallet Management Engine**
+  - Multi-wallet support per user (PRIMARY, BONUS, SYSTEM)
+  - Balance tracking with atomic operations
+  - Wallet status management (ACTIVE, LOCKED, CLOSED)
+
+- **🔁 Transaction Engine**
+  - Atomic internal transfers between wallets
+  - Double-entry ledger system (DEBIT/CREDIT)
+  - Transaction status management (PENDING, COMPLETED, FAILED, CANCELLED)
+  - Rollback safety and consistency guarantees
+
+- **📊 API Layer**
+  - RESTful API with proper HTTP status codes
+  - OpenAPI documentation with Swagger UI
+  - Comprehensive error handling and validation
+  - Pagination and filtering support
+
+- **🏗️ Infrastructure**
+  - Docker and docker-compose setup
+  - PostgreSQL with SQLAlchemy 2.0 async ORM
+  - Alembic database migrations
+  - GitHub Actions CI/CD pipeline
+
+---
+
 ## 📌 Project Overview
 
 VaultCraft is a **multi-tenant financial backend** designed to:
@@ -24,7 +60,7 @@ VaultCraft is a **systems engineering showcase** for transactional consistency, 
 
 ## 🔍 Problem It Solves
 
-Traditional backends don’t handle:
+Traditional backends don't handle:
 
 - Transactional failure mid-transfer
 - Ledger mismatch or balance drift
@@ -57,7 +93,7 @@ Traditional backends don’t handle:
 
 ---
 
-## ⚙️ Tech Stack
+## ⚙️ Tech Stack (Phase 1)
 
 | Category         | Tools Used                      |
 | ---------------- | ------------------------------ |
@@ -67,12 +103,9 @@ Traditional backends don’t handle:
 | Validation       | Pydantic v2                     |
 | Database         | PostgreSQL                      |
 | Auth             | JWT + bcrypt                    |
-| Messaging        | Kafka or RabbitMQ               |
-| Workers          | Celery + Redis                  |
+| Containerization | Docker + docker-compose         |
 | Migrations       | Alembic                         |
 | CI/CD            | GitHub Actions                  |
-| Containerization | Docker + docker-compose         |
-| Monitoring       | Prometheus + Grafana *(optional)* |
 | Testing          | Pytest + httpx + factory_boy    |
 
 ---
@@ -90,14 +123,15 @@ PostgreSQL (Wallet, Transaction, Ledger)
           ↓
    Event Outbox Table (DB Triggered)
           ↓
-Kafka (Transaction Events)
+Kafka (Transaction Events) [Future]
           ↓
-Celery Workers (Reconciliation, Logging)
+Celery Workers (Reconciliation, Logging) [Future]
           ↓
-Drift Detection + Audit Trail + Settlement
+Drift Detection + Audit Trail + Settlement [Future]
 
 ```
------
+
+---
 
 ## 📁 Folder Structure
 
@@ -105,132 +139,227 @@ Drift Detection + Audit Trail + Settlement
 vaultcraft/
 ├── app/
 │   ├── api/              # FastAPI routes
+│   │   ├── auth.py       # Authentication endpoints
+│   │   ├── wallets.py    # Wallet management
+│   │   └── transactions.py # Transaction engine
 │   ├── core/             # Config, settings, utils
+│   │   ├── config.py     # Application configuration
+│   │   └── auth.py       # JWT and auth utilities
 │   ├── db/               # DB connection & session
+│   │   └── session.py    # Database session management
 │   ├── models/           # SQLAlchemy models
+│   │   ├── base.py       # Base model class
+│   │   ├── organization.py # Organization model
+│   │   ├── user.py       # User model
+│   │   ├── wallet.py     # Wallet model
+│   │   ├── transaction.py # Transaction model
+│   │   └── ledger_entry.py # Ledger entry model
 │   ├── schemas/          # Pydantic models
-│   ├── services/         # Business logic: txn, ledger, auth
-│   ├── events/           # Outbox logic + Kafka producer
-│   ├── workers/          # Celery: reconciliation, auditing
+│   │   ├── auth.py       # Auth request/response schemas
+│   │   ├── wallet.py     # Wallet schemas
+│   │   └── transaction.py # Transaction schemas
+│   ├── services/         # Business logic
+│   │   ├── auth_service.py # Authentication service
+│   │   ├── wallet_service.py # Wallet operations
+│   │   └── transaction_service.py # Transaction engine
 │   └── main.py           # App entrypoint
 ├── alembic/              # DB migrations
 ├── tests/                # Unit + integration tests
-├── docker-compose.yml
-├── Dockerfile
-├── requirements.txt
-├── README.md
-└── .env
-
+├── docker-compose.yml    # Local development setup
+├── Dockerfile            # Container configuration
+├── requirements.txt      # Python dependencies
+├── pytest.ini           # Test configuration
+├── .github/workflows/    # CI/CD pipeline
+└── README.md
 ```
------
 
-## ✅ Key Features
+---
+
+## ✅ Key Features (Phase 1)
+
 ### 🔐 Authentication
-- JWT access tokens
-
+- JWT access tokens with configurable expiration
 - bcrypt password hashing
+- Multi-tenant user isolation
+- Organization-based access control
 
-- Optional: 2FA / OTP extensions
+### 💸 Wallet Operations
+- Create multiple wallet types (PRIMARY, BONUS, SYSTEM)
+- Atomic balance updates via transactions only
+- Wallet status management
+- Multi-currency support (INR default)
 
-### 💸 Wallet Transfers
-- Supports inter-org wallet transactions
+### 🔁 Transaction Engine
+- Internal transfers between wallets
+- Atomic operations with rollback safety
+- Double-entry ledger (DEBIT/CREDIT)
+- Transaction status tracking
+- Comprehensive audit trail
 
-- Validations for sufficient balance
+### 📦 API Design
+- RESTful endpoints with proper HTTP status codes
+- Request/response validation with Pydantic
+- Pagination and filtering support
+- Comprehensive error handling
+- OpenAPI documentation
 
-- Transaction statuses: PENDING, COMPLETED, FAILED
+### 🧪 Testing & Quality
+- Pytest test suite with async support
+- Test coverage reporting
+- GitHub Actions CI/CD pipeline
+- Code quality checks (linting, security)
 
-- Atomic logic with rollback safety
+---
 
-### 🧾 Double-Entry Ledger
-- Every transaction creates a DEBIT and CREDIT ledger row
+## 🚀 Getting Started
 
-- Wallet balances derived from ledger state
+### Prerequisites
+- Docker and docker-compose
+- Python 3.11+
+- PostgreSQL 15+
+- Redis 7+
 
-### 📦 Event-Driven Pipeline
-- Kafka-compatible event emission from EventOutbox
+### Quick Start
 
-- Outbox pattern ensures reliability even if brokers fail
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/your-username/vaultcraft.git
+   cd vaultcraft
+   ```
 
-### 🔍 Reconciliation Engine
-- Scheduled worker compares:
+2. **Setup environment**
+   ```bash
+   cp env.example .env
+   # Edit .env with your configuration
+   ```
 
-- wallet.balance vs SUM(ledger entries)
+3. **Start with Docker**
+   ```bash
+   docker-compose up --build
+   ```
 
-- Flags any drift/inconsistency
+4. **Access the application**
+   - API: http://localhost:8000
+   - Documentation: http://localhost:8000/docs
+   - Health check: http://localhost:8000/health
 
-- Logs results in ReconcileJob
+### Manual Setup
 
-### 🕵️ Audit Logging
-- Logs every action:
+1. **Install dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-- Actor ID
+2. **Setup database**
+   ```bash
+   # Create PostgreSQL database
+   createdb vaultcraft
+   
+   # Run migrations
+   alembic upgrade head
+   ```
 
-- Timestamp
+3. **Run the application**
+   ```bash
+   uvicorn app.main:app --reload
+   ```
 
-- Operation (e.g., TRANSFER_FUNDS)
+---
 
-- Metadata (wallet IDs, amount, org context)
+## 🧪 Testing
 
-----
+### Run Tests
+```bash
+# Run all tests
+pytest
 
-## 🧪 Testing Strategy
+# Run with coverage
+pytest --cov=app --cov-report=html
 
-| Type             | Examples                               |
-| ---------------- | -------------------------------------- |
-| ✅ Unit           | Wallet debit/credit logic, hashing     |
-| ✅ Integration    | Full transaction → ledger → event flow |
-| ✅ Auth           | JWT expiry, role-based access          |
-| ✅ Edge Cases     | Transfer with insufficient balance     |
-| ✅ Failures       | Kafka broker down → retry & fallback   |
-| ✅ Reconciliation | Drift found → alert generated          |
+# Run specific test file
+pytest tests/test_auth.py
+```
 
------
+### Test Coverage
+- Unit tests for services and utilities
+- Integration tests for API endpoints
+- Database transaction testing
+- Authentication flow testing
 
-## 🚀 Future Extensions
-VaultCraft is designed to scale — both in features and complexity. Some next steps:
+---
 
-🧠 Fraud detection engine (based on ledger anomalies)
+## 📚 API Documentation
 
-📈 Analytics dashboard (org-level balance, txn volume)
+### Authentication Endpoints
+- `POST /api/v1/auth/signup` - User registration
+- `POST /api/v1/auth/login` - User authentication
+- `GET /api/v1/auth/me` - Current user info
 
-🧾 Settlement system (delayed clearing between orgs)
+### Wallet Endpoints
+- `POST /api/v1/wallets/` - Create wallet
+- `GET /api/v1/wallets/` - List user wallets
+- `GET /api/v1/wallets/{id}` - Get wallet details
+- `POST /api/v1/wallets/transfer` - Transfer funds
+- `GET /api/v1/wallets/summary` - Organization summary
 
-📲 OTP / 2FA flows for sensitive operations
+### Transaction Endpoints
+- `POST /api/v1/transactions/transfer` - Create transfer
+- `GET /api/v1/transactions/` - List transactions
+- `GET /api/v1/transactions/{id}` - Get transaction details
+- `GET /api/v1/transactions/{id}/ledger` - Get ledger entries
+- `POST /api/v1/transactions/{id}/cancel` - Cancel transaction
 
-🌐 Admin dashboard using Streamlit or React
+---
 
-📊 Prometheus metrics for drift and txn lag
+## 🔮 Future Roadmap
 
-----
-## 🧭 Project Goals
-* VaultCraft is built to demonstrate your ability to:
+### Phase 2: Event System & Background Jobs
+- [ ] Outbox pattern implementation
+- [ ] Kafka/RabbitMQ integration
+- [ ] Celery worker setup
+- [ ] Event-driven transaction processing
 
-* Build production-aware systems, not toy APIs
+### Phase 3: Advanced Features
+- [ ] Reconciliation engine
+- [ ] Cross-organization settlements
+- [ ] Fraud detection system
+- [ ] Analytics dashboard
 
-* Design around failure recovery, consistency, and scale
+### Phase 4: Production Features
+- [ ] Prometheus metrics
+- [ ] Grafana dashboards
+- [ ] Advanced monitoring
+- [ ] Performance optimization
 
-* Work with event-driven pipelines and background jobs
+---
 
-* Think in real-world accounting logic
+## 🛠️ Development
 
-* It’s a backend engine that proves system design awareness, not just syntax.
+### Code Quality
+- Follow PEP 8 style guidelines
+- Use type hints throughout
+- Write comprehensive docstrings
+- Maintain test coverage above 80%
 
----- 
-## 🛠️ Getting Started
-1. Clone the repo
-git clone https://github.com/your-username/vaultcraft.git
-cd vaultcraft
+### Contributing
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests for new functionality
+5. Submit a pull request
 
-2. Create environment file
-cp .env.example .env
-
-3. Run with Docker
-docker-compose up --build
+---
 
 ## 📫 Contact
 
 Built by [Bhaskar Reddy](bento.me/bhaskar-reddy).
 
 DM me on [LinkedIn](https://www.linkedin.com/in/bhaskar-reddy-sde/) or [X](https://x.com/ShipWithBhaskar) to chat backend, architecture, or system design.
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 

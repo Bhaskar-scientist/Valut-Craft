@@ -1,42 +1,55 @@
-from pydantic import BaseModel
-from uuid import UUID
+from pydantic import BaseModel, Field, validator
+from typing import Optional, List
 from datetime import datetime
 from decimal import Decimal
+from app.models.wallet import WalletType, WalletStatus
 
 class WalletCreate(BaseModel):
-    user_id: UUID
-    currency: str = "INR"
+    type: WalletType = Field(default=WalletType.PRIMARY, description="Wallet type")
+    currency: str = Field(default="INR", description="Wallet currency")
 
-class WalletOut(BaseModel):
-    id: UUID
-    user_id: UUID
-    org_id: UUID | None
-    balance: Decimal
-    currency: str
-    created_at: datetime
-from enum import Enum
+class WalletUpdate(BaseModel):
+    status: Optional[WalletStatus] = Field(None, description="Wallet status")
+    type: Optional[WalletType] = Field(None, description="Wallet type")
 
-class WalletType(str, Enum):
-    PRIMARY = "PRIMARY"
-    BONUS = "BONUS"
-    SYSTEM = "SYSTEM"
+class WalletResponse(BaseModel):
+    id: str = Field(..., description="Wallet ID")
+    user_id: str = Field(..., description="User ID")
+    balance: Decimal = Field(..., description="Current wallet balance")
+    currency: str = Field(..., description="Wallet currency")
+    org_id: Optional[str] = Field(None, description="Organization ID")
+    type: WalletType = Field(..., description="Wallet type")
+    status: WalletStatus = Field(..., description="Wallet status")
+    created_at: datetime = Field(..., description="Wallet creation timestamp")
 
-class WalletStatus(str, Enum):
-    ACTIVE = "ACTIVE"
-    LOCKED = "LOCKED"
-    CLOSED = "CLOSED"
+    class Config:
+        from_attributes = True
 
-class WalletCreate(BaseModel):
-    user_id: UUID
-    currency: str = "INR"
-    type: WalletType = WalletType.PRIMARY
+class WalletListResponse(BaseModel):
+    wallets: List[WalletResponse] = Field(..., description="List of wallets")
+    total_count: int = Field(..., description="Total number of wallets")
 
-class WalletOut(BaseModel):
-    id: UUID
-    user_id: UUID
-    org_id: UUID | None
-    balance: Decimal
-    currency: str
-    type: WalletType
-    status: WalletStatus
-    created_at: datetime
+class WalletBalanceResponse(BaseModel):
+    wallet_id: str = Field(..., description="Wallet ID")
+    balance: Decimal = Field(..., description="Current balance")
+    currency: str = Field(..., description="Currency")
+    last_updated: datetime = Field(..., description="Last balance update timestamp")
+
+class WalletTransferRequest(BaseModel):
+    sender_wallet_id: str = Field(..., description="Source wallet ID")
+    receiver_wallet_id: str = Field(..., description="Destination wallet ID")
+    amount: Decimal = Field(..., gt=0, description="Transfer amount (must be positive)")
+    description: Optional[str] = Field(None, description="Transfer description")
+    reference_id: Optional[str] = Field(None, description="External reference ID")
+
+    @validator('amount')
+    def validate_amount(cls, v):
+        if v <= 0:
+            raise ValueError('Amount must be positive')
+        return v
+
+    @validator('sender_wallet_id', 'receiver_wallet_id')
+    def validate_different_wallets(cls, v, values):
+        if 'sender_wallet_id' in values and v == values['sender_wallet_id']:
+            raise ValueError('Sender and receiver wallets must be different')
+        return v
