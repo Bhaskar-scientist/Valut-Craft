@@ -1,13 +1,16 @@
 # app/schemas/transaction.py
 
-from pydantic import BaseModel
-from uuid import UUID
 from datetime import datetime
+from uuid import UUID
+
+from pydantic import BaseModel
+
 
 class TransactionCreate(BaseModel):
     org_id: UUID
     reference_id: str | None = None
     description: str | None = None
+
 
 class TransactionOut(BaseModel):
     id: UUID

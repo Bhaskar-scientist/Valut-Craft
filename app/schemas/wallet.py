@@ -1,16 +1,21 @@
-from pydantic import BaseModel, Field, validator
-from typing import Optional, List
 from datetime import datetime
 from decimal import Decimal
-from app.models.wallet import WalletType, WalletStatus
+from typing import List, Optional
+
+from pydantic import BaseModel, Field, validator
+
+from app.models.wallet import WalletStatus, WalletType
+
 
 class WalletCreate(BaseModel):
     type: WalletType = Field(default=WalletType.PRIMARY, description="Wallet type")
     currency: str = Field(default="INR", description="Wallet currency")
 
+
 class WalletUpdate(BaseModel):
     status: Optional[WalletStatus] = Field(None, description="Wallet status")
     type: Optional[WalletType] = Field(None, description="Wallet type")
+
 
 class WalletResponse(BaseModel):
     id: str = Field(..., description="Wallet ID")
@@ -25,15 +30,18 @@ class WalletResponse(BaseModel):
     class Config:
         from_attributes = True
 
+
 class WalletListResponse(BaseModel):
     wallets: List[WalletResponse] = Field(..., description="List of wallets")
     total_count: int = Field(..., description="Total number of wallets")
+
 
 class WalletBalanceResponse(BaseModel):
     wallet_id: str = Field(..., description="Wallet ID")
     balance: Decimal = Field(..., description="Current balance")
     currency: str = Field(..., description="Currency")
     last_updated: datetime = Field(..., description="Last balance update timestamp")
+
 
 class WalletTransferRequest(BaseModel):
     sender_wallet_id: str = Field(..., description="Source wallet ID")
@@ -42,14 +50,14 @@ class WalletTransferRequest(BaseModel):
     description: Optional[str] = Field(None, description="Transfer description")
     reference_id: Optional[str] = Field(None, description="External reference ID")
 
-    @validator('amount')
+    @validator("amount")
     def validate_amount(cls, v):
         if v <= 0:
-            raise ValueError('Amount must be positive')
+            raise ValueError("Amount must be positive")
         return v
 
-    @validator('sender_wallet_id', 'receiver_wallet_id')
+    @validator("sender_wallet_id", "receiver_wallet_id")
     def validate_different_wallets(cls, v, values):
-        if 'sender_wallet_id' in values and v == values['sender_wallet_id']:
-            raise ValueError('Sender and receiver wallets must be different')
+        if "sender_wallet_id" in values and v == values["sender_wallet_id"]:
+            raise ValueError("Sender and receiver wallets must be different")
         return v

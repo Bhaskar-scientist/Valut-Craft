@@ -1,9 +1,11 @@
 import uuid
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import ForeignKey, String, func
 from datetime import datetime
 
+from sqlalchemy import ForeignKey, String, func
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
 from app.models.base import Base
+
 
 class User(Base):
     __tablename__ = "users"

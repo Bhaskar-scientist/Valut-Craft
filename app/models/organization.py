@@ -1,9 +1,12 @@
 import uuid
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import String, func
 from datetime import datetime
 
-from app.models.base import Base  # this should define Base = declarative_base()
+from sqlalchemy import String, func
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from app.models.base import \
+    Base  # this should define Base = declarative_base()
+
 
 class Organization(Base):
     __tablename__ = "organizations"

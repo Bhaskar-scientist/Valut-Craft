@@ -1,17 +1,20 @@
 # app/models/ledger_entry.py
 
 import uuid
-from decimal import Decimal
 from datetime import datetime
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import ForeignKey, String, Numeric, Enum, func
+from decimal import Decimal
 from enum import Enum as PyEnum
 
+from sqlalchemy import Enum, ForeignKey, Numeric, String, func
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
 from app.models.base import Base
+
 
 class EntryType(str, PyEnum):
     DEBIT = "DEBIT"
     CREDIT = "CREDIT"
+
 
 class LedgerEntry(Base):
     __tablename__ = "ledger_entries"
@@ -26,4 +29,3 @@ class LedgerEntry(Base):
     # Backrefs
     wallet = relationship("Wallet")
     transaction = relationship("Transaction", back_populates="ledger_entries")
-    
