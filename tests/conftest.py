@@ -13,7 +13,7 @@ from app.models.base import Base
 
 # Test database URL
 TEST_DATABASE_URL = (
-    "postgresql+asyncpg://vaultcraft:vaultcraft123@localhost:5432/vaultcraft_test"
+    "postgresql+asyncpg://vaultcraft:vaultcraft123@localhost:5432/vaultcraft"
 )
 
 # Lazy test database setup
