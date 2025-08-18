@@ -49,8 +49,12 @@ db_url = os.getenv("DATABASE_URL")
 if not db_url:
     raise ValueError("DATABASE_URL is not set in .env")
 
-# Override the default sqlalchemy.url
-config.set_main_option("sqlalchemy.url", db_url)
+# Convert async database URL to sync for alembic (alembic doesn't support async)
+# Replace asyncpg with psycopg2 for migration purposes
+sync_db_url = db_url.replace("postgresql+asyncpg://", "postgresql://")
+
+# Override the default sqlalchemy.url with sync version
+config.set_main_option("sqlalchemy.url", sync_db_url)
 
 # add your model's MetaData object here
 # for 'autogenerate' support

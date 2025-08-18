@@ -17,10 +17,18 @@ class UserLogin(BaseModel):
     password: str = Field(..., description="User password")
 
 
+class UserInfo(BaseModel):
+    id: str = Field(..., description="User ID")
+    email: str = Field(..., description="User email")
+    organization_id: str = Field(..., description="Organization ID")
+    organization_name: str = Field(..., description="Organization name")
+
+
 class Token(BaseModel):
     access_token: str = Field(..., description="JWT access token")
     token_type: str = Field(default="bearer", description="Token type")
     expires_in: int = Field(..., description="Token expiration time in minutes")
+    user: UserInfo = Field(..., description="User information")
 
 
 class TokenData(BaseModel):

@@ -2,9 +2,10 @@ import asyncio
 import uuid
 
 import pytest
-from fastapi.testclient import TestClient
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.orm import sessionmaker
+import pytest_asyncio
+from httpx import AsyncClient
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
+from sqlalchemy import text
 
 from app.core.config import settings
 from app.db.session import get_db
@@ -34,7 +35,7 @@ def get_testing_session_local():
     global _testing_session_local
     if _testing_session_local is None:
         engine = get_test_engine()
-        _testing_session_local = sessionmaker(
+        _testing_session_local = async_sessionmaker(
             engine, class_=AsyncSession, expire_on_commit=False
         )
     return _testing_session_local
@@ -48,7 +49,7 @@ def event_loop():
     loop.close()
 
 
-@pytest.fixture(scope="session")
+@pytest_asyncio.fixture(scope="session")
 async def test_db_setup():
     """Setup test database tables"""
     engine = get_test_engine()
@@ -59,25 +60,32 @@ async def test_db_setup():
         await conn.run_sync(Base.metadata.drop_all)
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 async def db_session(test_db_setup):
     """Create a fresh database session for each test"""
     TestingSessionLocal = get_testing_session_local()
     async with TestingSessionLocal() as session:
         yield session
+        # Clean up any data created during the test
         await session.rollback()
+        # Truncate tables to ensure clean state
+        async with session.begin():
+            await session.execute(text("TRUNCATE TABLE users, organizations CASCADE"))
+            await session.commit()
 
 
-@pytest.fixture
-def client(db_session):
-    """Create a test client with database dependency override"""
+@pytest_asyncio.fixture
+async def client(db_session):
+    """Create an async test client with database dependency override"""
 
     async def override_get_db():
         yield db_session
 
     app.dependency_overrides[get_db] = override_get_db
-    with TestClient(app) as test_client:
-        yield test_client
+    
+    async with AsyncClient(app=app, base_url="http://testserver") as ac:
+        yield ac
+    
     app.dependency_overrides.clear()
 
 
