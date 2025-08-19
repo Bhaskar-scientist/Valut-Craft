@@ -1,8 +1,7 @@
 import logging
 from typing import AsyncGenerator
 
-from sqlalchemy.ext.asyncio import (AsyncSession, async_sessionmaker,
-                                    create_async_engine)
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.pool import NullPool
 
 from app.core.config import settings
@@ -24,8 +23,10 @@ def get_engine():
         database_url = settings.DATABASE_URL
         if not database_url.startswith("postgresql+asyncpg://"):
             # Force asyncpg if not already specified
-            database_url = database_url.replace("postgresql://", "postgresql+asyncpg://")
-        
+            database_url = database_url.replace(
+                "postgresql://", "postgresql+asyncpg://"
+            )
+
         _engine = create_async_engine(
             database_url,
             echo=settings.DEBUG,
@@ -72,7 +73,7 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
 async def init_db():
     """Initialize database tables"""
     from app.models.base import Base
-    
+
     engine = get_engine()
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)

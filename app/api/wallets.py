@@ -9,9 +9,13 @@ from app.core.auth import get_current_user_with_org
 from app.db.session import get_db
 from app.models.organization import Organization
 from app.models.user import User
-from app.schemas.wallet import (WalletBalanceResponse, WalletCreate,
-                                WalletListResponse, WalletResponse,
-                                WalletTransferRequest)
+from app.schemas.wallet import (
+    WalletBalanceResponse,
+    WalletCreate,
+    WalletListResponse,
+    WalletResponse,
+    WalletTransferRequest,
+)
 from app.services.transaction_service import TransactionService
 from app.services.wallet_service import WalletService
 

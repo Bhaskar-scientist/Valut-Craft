@@ -5,8 +5,7 @@ from fastapi import HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.auth import (create_access_token, get_password_hash,
-                           verify_password)
+from app.core.auth import create_access_token, get_password_hash, verify_password
 from app.core.config import settings
 from app.models.organization import Organization
 from app.models.user import User

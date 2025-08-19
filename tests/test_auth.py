@@ -1,5 +1,6 @@
-import pytest
 import uuid
+
+import pytest
 from httpx import AsyncClient
 
 from app.main import app
@@ -11,7 +12,7 @@ class TestAuthEndpoints:
     def test_app_import(self):
         """Test that the app can be imported and basic structure works"""
         assert app is not None
-        assert hasattr(app, 'routes')
+        assert hasattr(app, "routes")
         print("App imported successfully")
 
     @pytest.mark.asyncio
