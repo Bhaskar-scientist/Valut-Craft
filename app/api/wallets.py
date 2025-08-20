@@ -25,10 +25,10 @@ router = APIRouter(prefix="/wallets", tags=["Wallets"])
 @router.post("/", response_model=WalletResponse, status_code=status.HTTP_201_CREATED)
 async def create_wallet(
     wallet_data: WalletCreate,
-    current_user,
-    organization=Depends(get_current_user_with_org),
+    user_org: tuple[User, Organization] = Depends(get_current_user_with_org),
     db: AsyncSession = Depends(get_db),
 ):
+    current_user, organization = user_org
     """
     Create a new wallet for the authenticated user.
 
@@ -52,10 +52,10 @@ async def create_wallet(
 
 @router.get("/", response_model=WalletListResponse)
 async def list_wallets(
-    current_user,
-    organization=Depends(get_current_user_with_org),
+    user_org: tuple[User, Organization] = Depends(get_current_user_with_org),
     db: AsyncSession = Depends(get_db),
 ):
+    current_user, organization = user_org
     """
     List all wallets for the authenticated user within their organization.
     """
@@ -76,10 +76,10 @@ async def list_wallets(
 @router.get("/{wallet_id}", response_model=WalletResponse)
 async def get_wallet(
     wallet_id: str,
-    current_user,
-    organization=Depends(get_current_user_with_org),
+    user_org: tuple[User, Organization] = Depends(get_current_user_with_org),
     db: AsyncSession = Depends(get_db),
 ):
+    current_user, organization = user_org
     """
     Get details of a specific wallet.
     Users can only access wallets that belong to them within their organization.
@@ -115,10 +115,10 @@ async def get_wallet(
 @router.get("/{wallet_id}/balance", response_model=WalletBalanceResponse)
 async def get_wallet_balance(
     wallet_id: str,
-    current_user,
-    organization=Depends(get_current_user_with_org),
+    user_org: tuple[User, Organization] = Depends(get_current_user_with_org),
     db: AsyncSession = Depends(get_db),
 ):
+    current_user, organization = user_org
     """
     Get the current balance of a specific wallet.
     """
@@ -146,10 +146,10 @@ async def get_wallet_balance(
 @router.post("/transfer", response_model=dict)
 async def transfer_funds(
     transfer_data: WalletTransferRequest,
-    current_user,
-    organization=Depends(get_current_user_with_org),
+    user_org: tuple[User, Organization] = Depends(get_current_user_with_org),
     db: AsyncSession = Depends(get_db),
 ):
+    current_user, organization = user_org
     """
     Transfer funds between wallets within the same organization.
 
@@ -197,10 +197,10 @@ async def get_wallet_transactions(
     wallet_id: str,
     page: int = Query(1, ge=1, description="Page number"),
     page_size: int = Query(20, ge=1, le=100, description="Page size"),
-    current_user: User = Depends(get_current_user_with_org),
-    organization: Organization = Depends(get_current_user_with_org),
+    user_org: tuple[User, Organization] = Depends(get_current_user_with_org),
     db: AsyncSession = Depends(get_db),
 ):
+    current_user, organization = user_org
     """
     Get transaction history for a specific wallet.
     Users can only access transaction history for wallets they own.
@@ -244,10 +244,10 @@ async def get_wallet_transactions(
 
 @router.get("/summary")
 async def get_wallet_summary(
-    current_user,
-    organization=Depends(get_current_user_with_org),
+    user_org: tuple[User, Organization] = Depends(get_current_user_with_org),
     db: AsyncSession = Depends(get_db),
 ):
+    current_user, organization = user_org
     """
     Get wallet summary for the current user's organization.
     This provides an overview of all wallets and total balances.

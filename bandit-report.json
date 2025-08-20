@@ -1,15 +1,6 @@
 {
-  "errors": [
-    {
-      "filename": "app/api\\transactions.py",
-      "reason": "syntax error while parsing AST from file"
-    },
-    {
-      "filename": "app/api\\wallets.py",
-      "reason": "syntax error while parsing AST from file"
-    }
-  ],
-  "generated_at": "2025-08-17T12:47:23Z",
+  "errors": [],
+  "generated_at": "2025-08-20T10:25:56Z",
   "metrics": {
     "_totals": {
       "CONFIDENCE.HIGH": 0,
@@ -20,7 +11,7 @@
       "SEVERITY.LOW": 0,
       "SEVERITY.MEDIUM": 1,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 1521,
+      "loc": 1584,
       "nosec": 0,
       "skipped_tests": 0
     },
@@ -33,12 +24,20 @@
       "SEVERITY.LOW": 0,
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 59,
+      "loc": 51,
       "nosec": 0,
       "skipped_tests": 0
     },
     "app/api\\transactions.py": {
-      "loc": 223,
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 227,
       "nosec": 0,
       "skipped_tests": 0
     },
@@ -51,12 +50,20 @@
       "SEVERITY.LOW": 0,
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 32,
+      "loc": 40,
       "nosec": 0,
       "skipped_tests": 0
     },
     "app/api\\wallets.py": {
-      "loc": 231,
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 228,
       "nosec": 0,
       "skipped_tests": 0
     },
@@ -69,7 +76,7 @@
       "SEVERITY.LOW": 0,
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 77,
+      "loc": 81,
       "nosec": 0,
       "skipped_tests": 0
     },
@@ -82,7 +89,7 @@
       "SEVERITY.LOW": 0,
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 17,
+      "loc": 19,
       "nosec": 0,
       "skipped_tests": 0
     },
@@ -95,7 +102,7 @@
       "SEVERITY.LOW": 0,
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 43,
+      "loc": 69,
       "nosec": 0,
       "skipped_tests": 0
     },
@@ -108,7 +115,7 @@
       "SEVERITY.LOW": 0,
       "SEVERITY.MEDIUM": 1,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 108,
+      "loc": 100,
       "nosec": 0,
       "skipped_tests": 0
     },
@@ -160,7 +167,7 @@
       "SEVERITY.LOW": 0,
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 32,
+      "loc": 39,
       "nosec": 0,
       "skipped_tests": 0
     },
@@ -186,7 +193,7 @@
       "SEVERITY.LOW": 0,
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 31,
+      "loc": 32,
       "nosec": 0,
       "skipped_tests": 0
     },
@@ -199,7 +206,7 @@
       "SEVERITY.LOW": 0,
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 30,
+      "loc": 38,
       "nosec": 0,
       "skipped_tests": 0
     },
@@ -238,7 +245,7 @@
       "SEVERITY.LOW": 0,
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 58,
+      "loc": 72,
       "nosec": 0,
       "skipped_tests": 0
     },
@@ -277,7 +284,7 @@
       "SEVERITY.LOW": 0,
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 46,
+      "loc": 53,
       "nosec": 0,
       "skipped_tests": 0
     },
@@ -290,7 +297,7 @@
       "SEVERITY.LOW": 0,
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 109,
+      "loc": 106,
       "nosec": 0,
       "skipped_tests": 0
     },
@@ -303,7 +310,7 @@
       "SEVERITY.LOW": 0,
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 192,
+      "loc": 197,
       "nosec": 0,
       "skipped_tests": 0
     },
@@ -316,16 +323,16 @@
       "SEVERITY.LOW": 0,
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 131,
+      "loc": 130,
       "nosec": 0,
       "skipped_tests": 0
     }
   },
   "results": [
     {
-      "code": "133         \"app.main:app\",\n134         host=\"0.0.0.0\",\n135         port=8000,\n",
-      "col_offset": 13,
-      "end_col_offset": 22,
+      "code": "138     uvicorn.run(\n139         \"app.main:app\", host=\"0.0.0.0\", port=8000, reload=True, log_level=\"info\"\n140     )\n",
+      "col_offset": 29,
+      "end_col_offset": 38,
       "filename": "app/main.py",
       "issue_confidence": "MEDIUM",
       "issue_cwe": {
@@ -334,9 +341,9 @@
       },
       "issue_severity": "MEDIUM",
       "issue_text": "Possible binding to all interfaces.",
-      "line_number": 134,
+      "line_number": 139,
       "line_range": [
-        134
+        139
       ],
       "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b104_hardcoded_bind_all_interfaces.html",
       "test_id": "B104",

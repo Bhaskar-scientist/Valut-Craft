@@ -1,6 +1,7 @@
 from datetime import datetime
 from decimal import Decimal
 from typing import List, Optional
+from uuid import UUID
 
 from pydantic import BaseModel, Field, validator
 
@@ -8,6 +9,7 @@ from app.models.wallet import WalletStatus, WalletType
 
 
 class WalletCreate(BaseModel):
+    name: str = Field(..., description="Wallet name")
     type: WalletType = Field(default=WalletType.PRIMARY, description="Wallet type")
     currency: str = Field(default="INR", description="Wallet currency")
 
@@ -29,6 +31,12 @@ class WalletResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+    @validator("id", "user_id", "org_id", pre=True)
+    def convert_uuid_to_str(cls, v):
+        if isinstance(v, UUID):
+            return str(v)
+        return v
 
 
 class WalletListResponse(BaseModel):

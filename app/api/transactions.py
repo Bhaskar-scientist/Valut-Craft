@@ -23,10 +23,10 @@ router = APIRouter(prefix="/transactions", tags=["Transactions"])
 @router.post("/transfer", response_model=dict)
 async def create_transfer(
     transaction_data: TransactionCreate,
-    current_user: User = Depends(get_current_user_with_org),
-    organization: Organization = Depends(get_current_user_with_org),
+    user_org: tuple[User, Organization] = Depends(get_current_user_with_org),
     db: AsyncSession = Depends(get_db),
 ):
+    current_user, organization = user_org
     """
     Create a new internal transfer between wallets.
 
@@ -71,10 +71,10 @@ async def list_transactions(
     wallet_id: str = Query(None, description="Filter by wallet ID"),
     page: int = Query(1, ge=1, description="Page number"),
     page_size: int = Query(20, ge=1, le=100, description="Page size"),
-    current_user: User = Depends(get_current_user_with_org),
-    organization: Organization = Depends(get_current_user_with_org),
+    user_org: tuple[User, Organization] = Depends(get_current_user_with_org),
     db: AsyncSession = Depends(get_db),
 ):
+    current_user, organization = user_org
     """
     List all transactions for the current user's organization.
 
@@ -109,10 +109,10 @@ async def list_transactions(
 @router.get("/{transaction_id}", response_model=TransactionResponse)
 async def get_transaction(
     transaction_id: str,
-    current_user: User = Depends(get_current_user_with_org),
-    organization: Organization = Depends(get_current_user_with_org),
+    user_org: tuple[User, Organization] = Depends(get_current_user_with_org),
     db: AsyncSession = Depends(get_db),
 ):
+    current_user, organization = user_org
     """
     Get details of a specific transaction.
 
@@ -142,10 +142,10 @@ async def get_transaction(
 @router.get("/{transaction_id}/ledger")
 async def get_transaction_ledger(
     transaction_id: str,
-    current_user: User = Depends(get_current_user_with_org),
-    organization: Organization = Depends(get_current_user_with_org),
+    user_org: tuple[User, Organization] = Depends(get_current_user_with_org),
     db: AsyncSession = Depends(get_db),
 ):
+    current_user, organization = user_org
     """
     Get ledger entries for a specific transaction.
 
@@ -184,10 +184,10 @@ async def get_transaction_ledger(
 @router.post("/{transaction_id}/cancel")
 async def cancel_transaction(
     transaction_id: str,
-    current_user: User = Depends(get_current_user_with_org),
-    organization: Organization = Depends(get_current_user_with_org),
+    user_org: tuple[User, Organization] = Depends(get_current_user_with_org),
     db: AsyncSession = Depends(get_db),
 ):
+    current_user, organization = user_org
     """
     Cancel a pending transaction.
 
@@ -216,10 +216,10 @@ async def cancel_transaction(
 
 @router.get("/summary")
 async def get_transaction_summary(
-    current_user: User = Depends(get_current_user_with_org),
-    organization: Organization = Depends(get_current_user_with_org),
+    user_org: tuple[User, Organization] = Depends(get_current_user_with_org),
     db: AsyncSession = Depends(get_db),
 ):
+    current_user, organization = user_org
     """
     Get transaction summary for the current user's organization.
 
